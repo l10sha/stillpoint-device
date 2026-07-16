@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>StillPoint — virtual device</title>
+<link rel="stylesheet" href="/shell.css">
+</head>
+<body>
+<main class="scene">
+  <section class="desk" aria-label="Virtual StillPoint device">
+    <canvas id="scene3d" aria-label="3D interactive StillPoint device"></canvas>
+    <canvas id="epd" width="2072" height="1072" class="epd-hidden" aria-hidden="true"></canvas>
+  </section>
+
+  <aside class="hud" aria-label="Test bench">
+    <header class="hud-head">
+      <h1>test bench</h1>
+      <div class="hud-clock"><span id="simtime">--:--</span><span id="phase">boot</span></div>
+    </header>
+
+    <div class="hud-row">
+      <span class="hud-label">mode</span><span id="mode" class="mode-pill">boot</span>
+      <span class="hud-label">panel</span><span id="busy" class="busy-dot" title="panel busy line"></span>
+    </div>
+
+    <div class="hud-group">
+      <span class="hud-label">interact</span>
+      <div class="btns">
+        <button data-act="tap">touch the lid</button>
+        <button data-act="sit">&ldquo;stillpoint, let&rsquo;s sit&rdquo;</button>
+        <button id="soundBtn">enable sound</button>
+      </div>
+    </div>
+
+    <div class="hud-group">
+      <span class="hud-label">inbox (simulated imap)</span>
+      <div class="btns">
+        <button data-act="email" data-arg="urgent">urgent from a key contact</button>
+        <button data-act="email" data-arg="noise">newsletter noise</button>
+      </div>
+    </div>
+
+    <div class="hud-group">
+      <span class="hud-label">warp the day</span>
+      <div class="btns warp">
+        <button data-warp="7,30">morning</button>
+        <button data-warp="9,30">focus</button>
+        <button data-warp="12,15">midday</button>
+        <button data-warp="13,59">afternoon</button>
+        <button data-warp="17,30">evening</button>
+        <button data-warp="22,30">night</button>
+      </div>
+      <div class="btns">
+        <button data-speed="1" class="speed on">×1</button>
+        <button data-speed="60" class="speed">×60</button>
+        <span class="hint">×60 shows the daily rhythm engine breathing</span>
+      </div>
+    </div>
+
+    <div class="hud-group console-group">
+      <span class="hud-label">service console</span>
+      <div id="console" class="console" role="log"></div>
+    </div>
+  </aside>
+</main>
+
+<script type="importmap">
+{
+    "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+    }
+}
+</script>
+<script src="/shell.js"></script>
+<script type="module" src="/shell3d.js"></script>
+</body>
+</html>

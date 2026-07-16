@@ -1,0 +1,155 @@
+:root {
+  --desk-1: #2a2119;
+  --desk-2: #47372a;
+  --graphite-1: #62615e;
+  --graphite-2: #3c3b39;
+  --graphite-3: #232322;
+  --paper: #ebe8e0;
+  --hud-bg: #16130f;
+  --hud-line: #2c261e;
+  --hud-text: #b8ad9c;
+  --hud-dim: #6e6558;
+  --accent: #c9a06b;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: "Avenir Next", "Helvetica Neue", sans-serif;
+  background: var(--hud-bg);
+  color: var(--hud-text);
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.scene {
+  display: flex;
+  height: 100vh;
+  align-items: stretch;
+  gap: 0;
+}
+
+/* --------------------------------------------------------- 3D viewport --- */
+.desk {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+#scene3d {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* vignette overlay for cinematic depth */
+.desk::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(ellipse 80% 80% at 50% 50%, transparent 55%, rgba(0,0,0,0.25) 100%);
+}
+
+/* Hidden offscreen canvas — firmware renders to this, Three.js reads it as a texture */
+.epd-hidden {
+  position: absolute;
+  left: -9999px;
+  top: -9999px;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+/* -------------------------------------------------------------- hud --- */
+.hud {
+  width: 375px;
+  flex-shrink: 0;
+  background: var(--hud-bg);
+  border-left: 1px solid var(--hud-line);
+  padding: 1.6rem 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  font-size: 0.82rem;
+  overflow-y: auto;
+}
+
+.hud-head { display: flex; justify-content: space-between; align-items: baseline; }
+.hud-head h1 {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.hud-clock { display: flex; align-items: baseline; gap: 0.6rem; }
+#simtime { font-size: 1.5rem; font-weight: 500; color: #e8dfd2; font-variant-numeric: tabular-nums; }
+#phase { color: var(--hud-dim); }
+
+.hud-row { display: flex; align-items: center; gap: 0.6rem; }
+.hud-label {
+  display: block;
+  font-size: 0.66rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--hud-dim);
+  margin-bottom: 0.45rem;
+}
+.hud-row .hud-label { margin-bottom: 0; }
+
+.mode-pill {
+  background: #241e15;
+  border: 1px solid var(--hud-line);
+  color: var(--accent);
+  border-radius: 99px;
+  padding: 0.15rem 0.7rem;
+  margin-right: auto;
+}
+
+.busy-dot {
+  width: 9px; height: 9px; border-radius: 50%;
+  background: #3a352c;
+  transition: background 150ms;
+}
+.busy-dot.on { background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+
+.btns { display: flex; flex-wrap: wrap; gap: 0.45rem; align-items: center; }
+.btns + .btns { margin-top: 0.5rem; }
+
+button {
+  font: inherit;
+  background: #211b13;
+  color: var(--hud-text);
+  border: 1px solid var(--hud-line);
+  border-radius: 8px;
+  padding: 0.42rem 0.75rem;
+  cursor: pointer;
+  transition: border-color 120ms, color 120ms, background 120ms;
+}
+button:hover { border-color: var(--accent); color: #eadfce; }
+button:active { background: #2b2317; }
+.speed.on { border-color: var(--accent); color: var(--accent); }
+.hint { color: var(--hud-dim); font-size: 0.7rem; }
+
+.console-group { flex: 1; display: flex; flex-direction: column; min-height: 180px; }
+.console {
+  flex: 1;
+  overflow-y: auto;
+  background: #0d0b08;
+  border: 1px solid var(--hud-line);
+  border-radius: 8px;
+  padding: 0.6rem 0.7rem;
+  font-family: "SF Mono", ui-monospace, Menlo, monospace;
+  font-size: 0.68rem;
+  line-height: 1.65;
+  color: #8d8474;
+}
+.console .svc { color: var(--accent); }
+.console .t { color: #57503f; }
+
+@media (max-width: 1020px) {
+  .scene { flex-direction: column; height: auto; min-height: 100vh; }
+  .desk { height: 55vh; min-height: 360px; }
+  .hud { width: 100%; border-left: none; border-top: 1px solid var(--hud-line); }
+}
