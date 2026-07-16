@@ -106,7 +106,9 @@ class Handler(BaseHTTPRequestHandler):
 
 
 def run(device, port=8777):
+    import os
+    port = int(os.environ.get("PORT", port))
     Handler.device = device
-    server = ThreadingHTTPServer(("127.0.0.1", port), Handler)
-    print(f"StillPoint virtual device · http://127.0.0.1:{port}")
+    server = ThreadingHTTPServer(("0.0.0.0", port), Handler)
+    print(f"StillPoint virtual device · http://0.0.0.0:{port}")
     server.serve_forever()
