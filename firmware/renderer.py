@@ -5,20 +5,28 @@ Layout philosophy matched to the product photography:
   • Main content large and centered, filling the wide screen
   • Clock is small, light, centered at the top — almost invisible
 
-Font: Avenir Next — Adrian Frutiger's humanist sans-serif.
+Font: Inter (bundled) — Rasmus Andersson's humanist sans-serif.
+Falls back to Avenir Next on macOS for local development.
 """
+from pathlib import Path
+
 from PIL import Image, ImageDraw, ImageFont
 
 from .panel import WIDTH, HEIGHT
 
-# Avenir Next TTC — indices: 0=Bold, 2=DemiBold, 4=Italic, 5=Medium, 6=MediumItalic, 7=Regular, 10=UltraLight
+# ── Font loading: bundled Inter for deployment, Avenir fallback for macOS ──
+_FONT_DIR = Path(__file__).parent / "fonts"
 _AVENIR = "/System/Library/Fonts/Avenir Next.ttc"
-_IDX_REGULAR = 7
-_IDX_MEDIUM = 5
-_IDX_MEDIUM_ITALIC = 6
-_IDX_DEMIBOLD = 2
-_IDX_BOLD = 0
-_IDX_ULTRALIGHT = 10
+
+# Mapping: role → (bundled TTF path, Avenir TTC index)
+_FONT_MAP = {
+    "regular":       (_FONT_DIR / "Inter-Regular.ttf",       7),
+    "medium":        (_FONT_DIR / "Inter-Medium.ttf",        5),
+    "medium_italic": (_FONT_DIR / "Inter-MediumItalic.ttf",  6),
+    "semibold":      (_FONT_DIR / "Inter-SemiBold.ttf",      2),
+    "bold":          (_FONT_DIR / "Inter-Bold.ttf",          0),
+    "ultralight":    (_FONT_DIR / "Inter-ExtraLight.ttf",    10),
+}
 
 PAPER = 255
 INK = 20
@@ -36,22 +44,27 @@ NIGHT_CLOCK_REGION = (WIDTH // 2 - 330, HEIGHT // 2 - 90, 660, 260)
 TIMER_REGION = (WIDTH // 2 - 420, HEIGHT // 2 - 240, 840, 410)
 
 
-def _font(size: int, index: int = _IDX_REGULAR) -> ImageFont.FreeTypeFont:
-    return ImageFont.truetype(_AVENIR, size, index=index)
+def _font(size: int, role: str = "regular") -> ImageFont.FreeTypeFont:
+    entry = _FONT_MAP[role]
+    bundled = entry[0]
+    if bundled.exists():
+        return ImageFont.truetype(str(bundled), size)
+    # Fallback to macOS Avenir Next
+    return ImageFont.truetype(_AVENIR, size, index=entry[1])
 
 
 # Sizes matched to the product photography proportions
-F_CLOCK = _font(64, _IDX_REGULAR)           # small and light, like the photos
-F_QUOTE = _font(132, _IDX_MEDIUM)           # main content — confident but not screaming
-F_QUOTE_SM = _font(106, _IDX_MEDIUM)
-F_ATTR = _font(64, _IDX_MEDIUM_ITALIC)
-F_LABEL = _font(76, _IDX_REGULAR)           # "Time for formal practice" label
-F_TITLE = _font(148, _IDX_BOLD)             # "See, Hear, Feel" — bold, commanding
-F_BODY = _font(96, _IDX_REGULAR)            # "7 min", body text
-F_FOOT = _font(60, _IDX_REGULAR)            # "Press above to begin"
-F_TIMER = _font(280, _IDX_ULTRALIGHT)       # airy countdown numerals
-F_ANCHOR = _font(84, _IDX_MEDIUM_ITALIC)    # anchor phrase during session
-F_NIGHT = _font(132, _IDX_ULTRALIGHT)
+F_CLOCK = _font(64, "regular")              # small and light, like the photos
+F_QUOTE = _font(132, "medium")              # main content — confident but not screaming
+F_QUOTE_SM = _font(106, "medium")
+F_ATTR = _font(64, "medium_italic")
+F_LABEL = _font(76, "regular")              # "Time for formal practice" label
+F_TITLE = _font(148, "bold")                # "See, Hear, Feel" — bold, commanding
+F_BODY = _font(96, "regular")               # "7 min", body text
+F_FOOT = _font(60, "regular")               # "Press above to begin"
+F_TIMER = _font(280, "ultralight")          # airy countdown numerals
+F_ANCHOR = _font(84, "medium_italic")       # anchor phrase during session
+F_NIGHT = _font(132, "ultralight")
 
 
 def _blank() -> tuple[Image.Image, ImageDraw.ImageDraw]:
